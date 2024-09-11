@@ -1,31 +1,56 @@
-import { useState } from 'react';
-import { hello11_backend } from 'declarations/hello11_backend';
+import React, { useState } from 'react';
+import './App.css'; // Import the CSS file for styling
 
-function App() {
-  const [greeting, setGreeting] = useState('');
+const App = () => {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    hello11_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
+  const handleAddTask = () => {
+    if (newTask.trim() === '') return;
+    setTasks([...tasks, newTask]);
+    setNewTask('');
+  };
+
+  const handleDeleteTask = (index) => {
+    const updatedTasks = tasks.filter((_, i) => i !== index);
+    setTasks(updatedTasks);
+  };
 
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <div className="app">
+      <header className="header">
+        <h1>To-Do List</h1>
+      </header>
+
+      <section className="todo-section">
+        <div className="input-container">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="Enter a new task"
+          />
+          <button onClick={handleAddTask}>Add Task</button>
+        </div>
+
+        <ul className="todo-list">
+          {tasks.map((task, index) => (
+            <li key={index} className="todo-item">
+              {task}
+              <button onClick={() => handleDeleteTask(index)} className="delete-button">
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer className="footer">
+        <p>&copy; 2024 To-Do List. All rights reserved.</p>
+      </footer>
+    </div>
   );
-}
+};
 
 export default App;
+
